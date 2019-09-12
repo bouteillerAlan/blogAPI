@@ -1,4 +1,4 @@
-import {Controller, Delete, Get, Post, Put} from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { ContentService } from '../service/content.service';
 
 @Controller('content')
@@ -6,7 +6,7 @@ export class ContentController {
     constructor(private readonly contentService: ContentService) {}
 
     @Get('')
-    getContent(): string {
+    getContent(): object {
         return this.contentService.getContent();
     }
 
