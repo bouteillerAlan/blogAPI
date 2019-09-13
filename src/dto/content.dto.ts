@@ -1,7 +1,7 @@
-export class CreateContent {
+export class DtoContent {
     readonly title: string;
     readonly id_author: string;
     readonly id_category: string;
-    readonly date: string;
+             date: unknown;
     readonly content: string;
 }
