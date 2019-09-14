@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EnvService } from './env';
 import { HelloModule } from './module/hello.module';
 import { ContentModule } from './module/content.module';
+import { CategorieModule } from "./module/categorie.module";
 
 const env = new EnvService().getEnv();
 
@@ -14,6 +15,7 @@ const env = new EnvService().getEnv();
         HelloModule,
         // data module
         ContentModule,
+        CategorieModule,
     ],
 })
 
