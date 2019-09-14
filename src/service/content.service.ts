@@ -14,14 +14,17 @@ export class ContentService {
 
     async setContent(body: DtoContent): Promise<ContentInterface> {
         const content = new this.contentModel(body);
-        return content.save();
+        const error = content.validateSync();
+        return error ? error : content.save();
     }
 
-    async updateContent(id, body: DtoContent): Promise<ContentInterface> {
-        return this.contentModel.updateOne({_id: id}, {$set: body});
+    updateContent(id, body: DtoContent): any {
+        return this.contentModel.updateOne({_id: id}, {$set: body}, {runValidators: true}, (err, doc) => {
+            return err ? err : doc;
+        });
     }
 
-    deleteContent(id): string {
+    deleteContent(id): object {
         return this.contentModel.deleteOne({_id: id});
     }
 }
