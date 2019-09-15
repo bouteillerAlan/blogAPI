@@ -8,12 +8,12 @@ export class AuthorController {
     constructor(private readonly authorService: AuthorService) {}
 
     @Get(':id')
-    async getAuthor(@Param('id') id): Promise<object> {
+    async getAuthorById(@Param('id') id): Promise<object> {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
 
-        const data = await this.authorService.getAuthor(id);
+        const data = await this.authorService.getAuthorById(id);
 
         // if no data
         if (data.length === 0) {
@@ -23,9 +23,36 @@ export class AuthorController {
         return {status: 'ok', data};
     }
 
+    @Get('name/:name')
+    async getAuthorByName(@Param('name') name): Promise<object> {
+
+        const data = await this.authorService.getAuthorByName(name);
+
+        // if no data
+        if (data.length === 0) {
+            throw new NotFoundException('No data.');
+        }
+
+        return {status: 'ok', data};
+    }
+
+    // !!! here i consider that password is encrypted with bcrypt in front
     @Post('add')
     async setAuthor(@Body() body: DtoAuthor): Promise<object> {
         const res = await this.authorService.setAuthor(body);
+        if (res['errors']) {
+            return {status : 'error', message : res['errors']}
+        } else {
+            return {status : 'ok', message : res}
+        }
+    }
+
+    // !!! this route encrypt the password
+    // !!! DO NOT USE IN PROD (cause : man in the middle!)
+    // #todo check if username already exist
+    @Post('add/encrypted')
+    async setAuthorEncrypted(@Body() body: DtoAuthor): Promise<object> {
+        const res = await this.authorService.setAuthorEncrypted(body);
         if (res['errors']) {
             return {status : 'error', message : res['errors']}
         } else {

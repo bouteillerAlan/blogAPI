@@ -6,6 +6,7 @@ import { AuthorSchema } from '../schema/author.schema';
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: 'Author', schema: AuthorSchema }])],
+    exports: [AuthorService],
     controllers: [AuthorController],
     providers: [AuthorService],
 })
