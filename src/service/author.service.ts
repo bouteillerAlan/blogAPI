@@ -30,13 +30,7 @@ export class AuthorService {
     // !!! encrypt the password
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
     async setAuthorEncrypted(body: DtoAuthor): Promise<AuthorInterface> {
-        await bcrypt.hash(body.password, env.bcrypt_salt, function(err, hash) {
-            if (!err) {
-               body.password = hash;
-            } else {
-                return err;
-            }
-        });
+        body.password = await bcrypt.hash(body.password, env.bcrypt_salt);
         const author = new this.authorModel(body);
         const error = author.validateSync();
         return error ? error : author.save();

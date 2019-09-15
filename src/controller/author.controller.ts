@@ -7,7 +7,7 @@ import { isMongoId } from '../function/mongo_id';
 export class AuthorController {
     constructor(private readonly authorService: AuthorService) {}
 
-    @Get('id/:id')
+    @Get(':id')
     async getAuthorById(@Param('id') id): Promise<object> {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
@@ -49,9 +49,10 @@ export class AuthorController {
 
     // !!! this route encrypt the password
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
+    // #todo check if username already exist
     @Post('add/encrypted')
     async setAuthorEncrypted(@Body() body: DtoAuthor): Promise<object> {
-        const res = await this.authorService.setAuthor(body);
+        const res = await this.authorService.setAuthorEncrypted(body);
         if (res['errors']) {
             return {status : 'error', message : res['errors']}
         } else {
