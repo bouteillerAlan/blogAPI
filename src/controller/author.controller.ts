@@ -7,13 +7,26 @@ import { isMongoId } from '../function/mongo_id';
 export class AuthorController {
     constructor(private readonly authorService: AuthorService) {}
 
-    @Get(':id')
-    async getAuthor(@Param('id') id): Promise<object> {
+    @Get('id/:id')
+    async getAuthorById(@Param('id') id): Promise<object> {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
 
-        const data = await this.authorService.getAuthor(id);
+        const data = await this.authorService.getAuthorById(id);
+
+        // if no data
+        if (data.length === 0) {
+            throw new NotFoundException('No data.');
+        }
+
+        return {status: 'ok', data};
+    }
+
+    @Get('name/:name')
+    async getAuthorByName(@Param('name') name): Promise<object> {
+
+        const data = await this.authorService.getAuthorByName(name);
 
         // if no data
         if (data.length === 0) {

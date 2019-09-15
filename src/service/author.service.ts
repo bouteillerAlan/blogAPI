@@ -8,8 +8,12 @@ import {DtoAuthor} from '../dto/author.dto';
 export class AuthorService {
     constructor(@InjectModel('Author') private readonly authorModel: Model<AuthorInterface>) {}
 
-    async getAuthor(id): Promise<AuthorInterface[]> {
+    async getAuthorById(id): Promise<AuthorInterface[]> {
         return RegExp('(all)', 'g').test(id) ? this.authorModel.find().exec() : this.authorModel.find({_id: id}).exec();
+    }
+
+    async getAuthorByName(name): Promise<AuthorInterface[]> {
+        return RegExp('(all)', 'g').test(name) ? this.authorModel.find().exec() : this.authorModel.find({name}).exec();
     }
 
     async setAuthor(body: DtoAuthor): Promise<AuthorInterface> {
