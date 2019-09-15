@@ -36,8 +36,21 @@ export class AuthorController {
         return {status: 'ok', data};
     }
 
+    // !!! here i consider that password is encrypted with bcrypt in front
     @Post('add')
     async setAuthor(@Body() body: DtoAuthor): Promise<object> {
+        const res = await this.authorService.setAuthor(body);
+        if (res['errors']) {
+            return {status : 'error', message : res['errors']}
+        } else {
+            return {status : 'ok', message : res}
+        }
+    }
+
+    // !!! this route encrypt the password
+    // !!! DO NOT USE IN PROD (cause : man in the middle!)
+    @Post('add/encrypted')
+    async setAuthorEncrypted(@Body() body: DtoAuthor): Promise<object> {
         const res = await this.authorService.setAuthor(body);
         if (res['errors']) {
             return {status : 'error', message : res['errors']}

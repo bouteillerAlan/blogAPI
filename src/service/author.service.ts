@@ -3,6 +3,10 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Injectable} from '@nestjs/common';
 import {AuthorInterface} from '../interface/author.interface';
 import {DtoAuthor} from '../dto/author.dto';
+import * as bcrypt from 'bcrypt';
+import {EnvService} from '../env';
+
+const env = new EnvService().getEnv();
 
 @Injectable()
 export class AuthorService {
@@ -16,13 +20,30 @@ export class AuthorService {
         return RegExp('(all)', 'g').test(name) ? this.authorModel.find().exec() : this.authorModel.find({name}).exec();
     }
 
+    // !!! here i consider that password is encrypted with bcrypt in front
     async setAuthor(body: DtoAuthor): Promise<AuthorInterface> {
         const author = new this.authorModel(body);
         const error = author.validateSync();
         return error ? error : author.save();
     }
 
+    // !!! encrypt the password
+    // !!! DO NOT USE IN PROD (cause : man in the middle!)
+    async setAuthorEncrypted(body: DtoAuthor): Promise<AuthorInterface> {
+        await bcrypt.hash(body.password, env.bcrypt_salt, function(err, hash) {
+            if (!err) {
+               body.password = hash;
+            } else {
+                return err;
+            }
+        });
+        const author = new this.authorModel(body);
+        const error = author.validateSync();
+        return error ? error : author.save();
+    }
+
     // #todo how to validate ?
+    // #todo if username or pass has no change
     updateAuthor(id, body: DtoAuthor): any {
         this.authorModel.updateOne({_id: id}, {$set: body}, {runValidators: true}, (err, doc) => {
             return err ? err : doc;
