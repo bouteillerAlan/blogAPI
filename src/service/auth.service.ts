@@ -1,5 +1,5 @@
-import {Injectable} from "@nestjs/common";
-import {AuthorService} from "./author.service";
+import {Injectable} from '@nestjs/common';
+import {AuthorService} from './author.service';
 import * as bcrypt from 'bcrypt';
 import {EnvService} from '../env';
 
@@ -10,17 +10,17 @@ export class AuthService {
     constructor(private readonly authorService: AuthorService) {}
 
     async validateUser(name: string, password: string): Promise<any> {
-        const user = await this.authorService.getAuthorByName(name);
+        const user: any = await this.authorService.getAuthorByName(name);
         if (user) {
-            bcrypt.compare(password, user['password'], (err, res) => {
+            bcrypt.compare(password, user.password, (err, res) => {
                 if (!err) {
-                    return {status:"ok", message:res};
+                    return {status: 'ok', message: res};
                 } else {
-                    return {status:"error", message:err};
+                    return {status: 'error', message: err};
                 }
             });
         } else {
-            return {status:"error", message:user};
+            return {status: 'error', message: user};
         }
     }
 }

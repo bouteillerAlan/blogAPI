@@ -3,6 +3,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Injectable} from '@nestjs/common';
 import {AuthorInterface} from '../interface/author.interface';
 import {DtoAuthor} from '../dto/author.dto';
+import {DtoAuthorUpdate} from '../dto/author.update.dto';
 import * as bcrypt from 'bcrypt';
 import {EnvService} from '../env';
 
@@ -30,21 +31,18 @@ export class AuthorService {
     // !!! encrypt the password
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
     async setAuthorEncrypted(body: DtoAuthor): Promise<AuthorInterface> {
-        body.password = await bcrypt.hash(body.password, env.bcrypt_salt);
         const author = new this.authorModel(body);
+        author.password = await bcrypt.hash(body.password, env.bcrypt_salt);
         const error = author.validateSync();
         return error ? error : author.save();
     }
 
-    // #todo how to validate ?
-    // #todo if username or pass has no change
-    updateAuthor(id, body: DtoAuthor): any {
-        this.authorModel.updateOne({_id: id}, {$set: body}, {runValidators: true}, (err, doc) => {
-            return err ? err : doc;
-        });
+    // check in front if username or pass has not changed
+    async updateAuthor(id, body: DtoAuthorUpdate): Promise<any> {
+        return await this.authorModel.updateOne({_id: id}, {$set: body});
     }
 
-    deleteAuthor(id): object {
-        return this.authorModel.deleteOne({_id: id});
+    async deleteAuthor(id): Promise<any> {
+        return await this.authorModel.deleteOne({_id: id});
     }
 }

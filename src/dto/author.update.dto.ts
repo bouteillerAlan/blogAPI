@@ -1,9 +1,11 @@
 import {IsOptional, IsString} from 'class-validator';
 
-export class DtoAuthor {
+export class DtoAuthorUpdate {
+    @IsOptional()
     @IsString()
     readonly name: string;
 
+    @IsOptional()
     @IsString()
     readonly password: string;
 
