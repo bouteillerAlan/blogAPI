@@ -39,11 +39,11 @@ export class AuthorController {
     // !!! here i consider that password is encrypted with bcrypt in front
     @Post('add')
     async setAuthor(@Body() body: DtoAuthor): Promise<object> {
-        const res = await this.authorService.setAuthor(body);
-        if (res['errors']) {
-            return {status : 'error', message : res['errors']}
+        const res: any = await this.authorService.setAuthor(body);
+        if (res.errors) {
+            return {status : 'error', message : res.errors};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 
@@ -52,11 +52,11 @@ export class AuthorController {
     // #todo check if username already exist
     @Post('add/encrypted')
     async setAuthorEncrypted(@Body() body: DtoAuthor): Promise<object> {
-        const res = await this.authorService.setAuthorEncrypted(body);
-        if (res['errors']) {
-            return {status : 'error', message : res['errors']}
+        const res: any = await this.authorService.setAuthorEncrypted(body);
+        if (res.errors) {
+            return {status : 'error', message : res.errors};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 
@@ -73,11 +73,11 @@ export class AuthorController {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
-        const res = await this.authorService.deleteAuthor(id);
-        if ( res['deletedCount'] <= 0) {
-            return {status : 'error', message : res}
+        const res: any = await this.authorService.deleteAuthor(id);
+        if ( res.deletedCount <= 0) {
+            return {status : 'error', message : res};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 }

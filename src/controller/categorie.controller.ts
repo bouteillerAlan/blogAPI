@@ -25,11 +25,11 @@ export class CategorieController {
 
     @Post('add')
     async setCategorie(@Body() body: DtoCategorie): Promise<object> {
-        const res = await this.categorieService.setCategorie(body);
-        if (res['errors']) {
-            return {status : 'error', message : res['errors']}
+        const res: any = await this.categorieService.setCategorie(body);
+        if (res.errors) {
+            return {status : 'error', message : res.errors};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 
@@ -46,11 +46,11 @@ export class CategorieController {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
-        const res = await this.categorieService.deleteCategorie(id);
-        if ( res['deletedCount'] <= 0) {
-            return {status : 'error', message : res}
+        const res: any = await this.categorieService.deleteCategorie(id);
+        if ( res.deletedCount <= 0) {
+            return {status : 'error', message : res};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 }

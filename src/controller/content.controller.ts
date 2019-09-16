@@ -25,11 +25,11 @@ export class ContentController {
 
     @Post('add')
     async setContent(@Body() body: DtoContent): Promise<object> {
-        const res = await this.contentService.setContent(body);
-        if (res['errors']) {
-            return {status : 'error', message : res['errors']}
+        const res: any = await this.contentService.setContent(body);
+        if (res.errors) {
+            return {status : 'error', message : res.errors};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 
@@ -46,11 +46,11 @@ export class ContentController {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
-        const res = await this.contentService.deleteContent(id);
-        if ( res['deletedCount'] <= 0) {
-            return {status : 'error', message : res}
+        const res: any = await this.contentService.deleteContent(id);
+        if ( res.deletedCount <= 0) {
+            return {status : 'error', message : res};
         } else {
-            return {status : 'ok', message : res}
+            return {status : 'ok', message : res};
         }
     }
 }
