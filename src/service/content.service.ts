@@ -10,7 +10,26 @@ export class ContentService {
     constructor(@InjectModel('Content') private readonly contentModel: Model<ContentInterface>) {}
 
     async getContent(id): Promise<ContentInterface[]> {
-        return RegExp('(all)', 'g').test(id) ? this.contentModel.find().exec() : this.contentModel.find({_id: id}).exec();
+        const options = [
+            {$project: {
+                title: 1,
+                date: 1,
+                author: {name: 1},
+                category: 1,
+            }},
+            {$lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'category',
+            }},
+            {$lookup: {
+                from: 'authors',
+                localField: 'author',
+                foreignField: '_id',
+                as: 'author',
+            }}];
+        return RegExp('(all)', 'g').test(id) ? this.contentModel.aggregate(options) : this.contentModel.find({_id: id}).exec();
     }
 
     async setContent(body: DtoContent): Promise<ContentInterface> {
