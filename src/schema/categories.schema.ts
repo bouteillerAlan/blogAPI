@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
 
-export const CategorieSchema = new mongoose.Schema({
+export const CategoriesSchema = new mongoose.Schema({
     name:          {type: String, required: [true, 'name is required.']},
 });
