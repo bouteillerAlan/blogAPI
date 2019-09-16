@@ -3,6 +3,7 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Injectable} from '@nestjs/common';
 import {ContentInterface} from '../interface/content.interface';
 import {DtoContent} from '../dto/content.dto';
+import {DtoContentUpdate} from '../dto/content.update.dto';
 
 @Injectable()
 export class ContentService {
@@ -18,13 +19,11 @@ export class ContentService {
         return error ? error : content.save();
     }
 
-    updateContent(id, body: DtoContent): any {
-        return this.contentModel.updateOne({_id: id}, {$set: body}, {runValidators: true}, (err, doc) => {
-            return err ? err : doc;
-        });
+    async updateContent(id, body: DtoContentUpdate): Promise<any> {
+        return this.contentModel.updateOne({_id: id}, {$set: body});
     }
 
-    deleteContent(id): object {
-        return this.contentModel.deleteOne({_id: id});
+    async deleteContent(id): Promise<any> {
+        return await this.contentModel.deleteOne({_id: id});
     }
 }
