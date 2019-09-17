@@ -5,13 +5,15 @@ import {AuthorInterface} from '../interface/author.interface';
 import {DtoAuthor} from '../dto/author.dto';
 import {DtoAuthorUpdate} from '../dto/author.update.dto';
 import * as bcrypt from 'bcrypt';
-import {EnvService} from '../env';
-
-const env = new EnvService().getEnv();
+import { ConfigService } from '../conf/config.service';
 
 @Injectable()
 export class AuthorService {
-    constructor(@InjectModel('Author') private readonly authorModel: Model<AuthorInterface>) {}
+    private env: any;
+
+    constructor(env: ConfigService, @InjectModel('Author') private readonly authorModel: Model<AuthorInterface>) {
+        this.env = env;
+    }
 
     async getAuthorById(id): Promise<AuthorInterface[]> {
         return RegExp('(all)', 'g').test(id) ? this.authorModel.find().exec() : this.authorModel.find({_id: id}).exec();
@@ -32,7 +34,7 @@ export class AuthorService {
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
     async setAuthorEncrypted(body: DtoAuthor): Promise<AuthorInterface> {
         const author = new this.authorModel(body);
-        author.password = await bcrypt.hash(body.password, env.bcrypt_salt);
+        author.password = await bcrypt.hash(body.password, this.env.get('bcrypt_salt'));
         const error = author.validateSync();
         return error ? error : author.save();
     }
