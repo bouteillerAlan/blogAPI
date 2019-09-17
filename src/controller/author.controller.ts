@@ -11,7 +11,7 @@ export class AuthorController {
     // check if a name exist
     private async checkName(name): Promise<any> {
         const data = await this.authorService.getAuthorByName(name);
-        return data.length === 0;
+        return !(data.length === 0);
     }
 
     @Get(':id')
@@ -46,10 +46,11 @@ export class AuthorController {
     // !!! here i consider that password is encrypted with bcrypt in front
     @Post('add')
     async setAuthor(@Body() body: DtoAuthor): Promise<object> {
-        if (this.checkName(name)) {
+        const nameExist = await this.checkName(body.name);
+        if (nameExist) {
             return {status : 'error', message : 'name already exist'};
         } else {
-            const res: any = await this.authorService.setAuthor(body);
+            const res: any = this.authorService.setAuthor(body);
             if (res.errors) {
                 return {status : 'error', message : res.errors};
             } else {
@@ -62,7 +63,8 @@ export class AuthorController {
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
     @Post('add/encrypted')
     async setAuthorEncrypted(@Body() body: DtoAuthor): Promise<object> {
-        if (this.checkName(name)) {
+        const nameExist = await this.checkName(body.name);
+        if (nameExist) {
             return {status : 'error', message : 'name already exist'};
         } else {
             const res: any = await this.authorService.setAuthorEncrypted(body);
@@ -76,7 +78,11 @@ export class AuthorController {
 
     @Put(':id')
     async updateAuthor(@Param('id') id, @Body() body: DtoAuthorUpdate): Promise<any> {
-        if (this.checkName(name)) {
+        let nameExist = false;
+        if (body.name) {
+            nameExist = await this.checkName(body.name);
+        }
+        if (nameExist) {
             return {status : 'error', message : 'name already exist'};
         } else {
             if (!isMongoId(id)) {

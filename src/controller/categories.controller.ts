@@ -11,7 +11,7 @@ export class CategoriesController {
     // check if a name exist
     private async checkCategories(categories): Promise<any> {
         const data = await this.categoriesService.getCategoriesByName(categories);
-        return data.length === 0;
+        return !(data.length === 0);
     }
 
     @Get(':id')
@@ -32,21 +32,33 @@ export class CategoriesController {
 
     @Post('add')
     async setCategories(@Body() body: DtoCategories): Promise<object> {
-        const res: any = await this.categoriesService.setCategories(body);
-        if (res.errors) {
-            return {status : 'error', message : res.errors};
+        const nameExist = await this.checkCategories(body.name);
+        if (nameExist) {
+            return {status : 'error', message : 'name already exist'};
         } else {
-            return {status : 'ok', message : res};
+            const res: any = await this.categoriesService.setCategories(body);
+            if (res.errors) {
+                return {status : 'error', message : res.errors};
+            } else {
+                return {status : 'ok', message : res};
+            }
         }
     }
 
-    // #todo check if categorie exist
     @Put(':id')
-    updateCategories(@Param('id') id, @Body() body: DtoCategoriesUpdate): object {
-        if (!isMongoId(id)) {
-            throw new NotFoundException('This id dosen\'t exist.');
+    async updateCategories(@Param('id') id, @Body() body: DtoCategoriesUpdate): Promise<object> {
+        let nameExist = false;
+        if (body.name) {
+            nameExist = await this.checkCategories(body.name);
         }
-        return this.categoriesService.updateCategories(id, body);
+        if (nameExist) {
+            return {status : 'error', message : 'name already exist'};
+        } else {
+            if (!isMongoId(id)) {
+                throw new NotFoundException('This id dosen\'t exist.');
+            }
+            return await this.categoriesService.updateCategories(id, body);
+        }
     }
 
     @Delete(':id')
