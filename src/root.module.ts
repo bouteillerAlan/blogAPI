@@ -1,19 +1,28 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { EnvService } from './env';
 import { HelloModule } from './module/hello.module';
 import { ContentModule } from './module/content.module';
 import { CategoriesModule } from './module/categories.module';
 import { AuthorModule } from './module/author.module';
-
-const env = new EnvService().getEnv();
+import { AuthModule } from './module/auth.module';
+import { ConfigService } from './conf/config.service';
+import { ConfigModule } from './conf/config.module';
 
 @Module({
     imports: [
         // connect to the mongodb database
-        MongooseModule.forRoot(`mongodb://${env.db_user}:${env.db_pass}@${env.db_uri}:${env.db_name}/${env.db_name}`, env.db_option),
+        MongooseModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: async (env: ConfigService) => ({
+                uri: `mongodb://${env.get('db_user')}:${env.get('db_pass')}@${env.get('db_uri')}:${env.get('db_port')}/${env.get('db_name')}`,
+                useNewUrlParser: true,
+            }),
+            inject: [ConfigService],
+        }),
         // ping module
         HelloModule,
+        // auth module
+        AuthModule,
         // data module
         ContentModule,
         CategoriesModule,
