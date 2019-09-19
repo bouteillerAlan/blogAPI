@@ -34,7 +34,7 @@ export class AuthorService {
     // !!! DO NOT USE IN PROD (cause : man in the middle!)
     async setAuthorEncrypted(body: DtoAuthor): Promise<AuthorInterface> {
         const author = new this.authorModel(body);
-        author.password = await bcrypt.hash(body.password, this.env.get('bcrypt_salt'));
+        author.password = await bcrypt.hash(body.password, Number(this.env.get('bcrypt_salt')));
         const error = author.validateSync();
         return error ? error : author.save();
     }
