@@ -34,7 +34,7 @@ export class AuthService {
                 return {status: false, message: 'bad credential'};
             } else {
                 // generate jwt payload
-                const payload = {name: author.name, sub: author._id};
+                const payload = {name: author.name, sub: check.data._id};
                 const jwt = this.jwtService.sign(payload);
                 // save in db
                 await this.authorModel.updateOne({_id: check.data._id}, {$set: {token: jwt}});

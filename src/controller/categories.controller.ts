@@ -1,9 +1,11 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards} from '@nestjs/common';
 import { CategoriesService } from '../service/categories.service';
 import { DtoCategories } from '../dto/categories.dto';
 import { DtoCategoriesUpdate } from '../dto/categories.update.dto';
 import { isMongoId } from '../function/mongo_id';
+import {AuthGuard} from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('categories')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
