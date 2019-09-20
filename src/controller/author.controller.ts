@@ -1,9 +1,11 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards} from '@nestjs/common';
 import { AuthorService } from '../service/author.service';
 import { DtoAuthor } from '../dto/author.dto';
 import { DtoAuthorUpdate } from '../dto/author.update.dto';
 import { isMongoId } from '../function/mongo_id';
+import {AuthGuard} from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('author')
 export class AuthorController {
     constructor(private readonly authorService: AuthorService) {}
