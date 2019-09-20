@@ -1,6 +1,9 @@
-#.env
+# .env
 *.env
 .env
+
+# tslint
+tslint.json
 
 # compiled output
 /dist
