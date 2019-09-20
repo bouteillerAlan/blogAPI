@@ -1,3 +1,10 @@
+# .env
+*.env
+.env
+
+# tslint
+tslint.json
+
 # compiled output
 /dist
 /node_modules
