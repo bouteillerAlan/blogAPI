@@ -1,15 +1,17 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Req, UseGuards} from '@nestjs/common';
 import { ContentService } from '../service/content.service';
 import { DtoContent } from '../dto/content.dto';
 import {DtoContentUpdate} from '../dto/content.update.dto';
 import { isMongoId } from '../function/mongo_id';
+import {AuthGuard} from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('content')
 export class ContentController {
     constructor(private readonly contentService: ContentService) {}
 
     @Get(':id')
-    async getContent(@Param('id') id): Promise<object> {
+    async getContent(@Req() req, @Param('id') id): Promise<object> {
         if (!isMongoId(id)) {
             throw new NotFoundException('This id dosen\'t exist.');
         }
@@ -21,16 +23,16 @@ export class ContentController {
             throw new NotFoundException('No data.');
         }
 
-        return {status: 'ok', data};
+        return {status: true, data, user: req.user};
     }
 
     @Post('add')
     async setContent(@Body() body: DtoContent): Promise<object> {
         const res: any = await this.contentService.setContent(body);
         if (res.errors) {
-            return {status : 'error', message : res.errors};
+            return {status : false, message : res.errors};
         } else {
-            return {status : 'ok', message : res};
+            return {status : true, message : res};
         }
     }
 
@@ -49,9 +51,9 @@ export class ContentController {
         }
         const res: any = await this.contentService.deleteContent(id);
         if ( res.deletedCount <= 0) {
-            return {status : 'error', message : res};
+            return {status : false, message : res};
         } else {
-            return {status : 'ok', message : res};
+            return {status : true, message : res};
         }
     }
 }
