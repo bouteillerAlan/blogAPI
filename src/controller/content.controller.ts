@@ -5,7 +5,6 @@ import {DtoContentUpdate} from '../dto/content.update.dto';
 import { isMongoId } from '../function/mongo_id';
 import {AuthGuard} from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
 @Controller('content')
 export class ContentController {
     constructor(private readonly contentService: ContentService) {}
@@ -26,6 +25,7 @@ export class ContentController {
         return {status: true, data, user: req.user};
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Post('add')
     async setContent(@Body() body: DtoContent): Promise<object> {
         const res: any = await this.contentService.setContent(body);
@@ -36,6 +36,7 @@ export class ContentController {
         }
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async updateContent(@Param('id') id, @Body() body: DtoContentUpdate): Promise<any> {
         if (!isMongoId(id)) {
@@ -44,6 +45,7 @@ export class ContentController {
         return await this.contentService.updateContent(id, body);
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     async deleteContent(@Param('id') id): Promise<any> {
         if (!isMongoId(id)) {
