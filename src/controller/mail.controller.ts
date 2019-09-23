@@ -9,7 +9,7 @@ import {MailService} from '../service/mail.service';
 export class MailController {
     constructor(private readonly mailService: MailService, private readonly mailerService: MailerService) {}
 
-    @Post('/test')
+    @Post('send')
     async mailer(@Body() body: DtoMail): Promise<any> {
         const data = await this.mailService.checkMailData(body);
 
