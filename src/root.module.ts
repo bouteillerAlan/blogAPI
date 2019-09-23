@@ -30,7 +30,7 @@ import {MailModule} from './module/mail.module';
                     from: `"${env.get('smtp_user_from')}" <${env.get('smtp_mail_from')}>`,
                 },
                 template: {
-                    dir: __dirname + env.get('smtp_dirname'),
+                    dir: env.get('smtp_dirname'),
                     adapter: new PugAdapter(), // or new PugAdapter()
                     options: {
                         strict: true,
