@@ -31,13 +31,20 @@ Put in ``./``
 
 ```
 # env file for dev
-db_uri      = 'xxxxx'
-db_port     = 'xxxxx'
-db_name     = 'xxxxx'
-db_user     = 'xxxxx'
-db_pass     = 'xxxxx'
-bcrypt_salt = 12
-secret      = 123456789
+db_uri          = 'xxxxx'
+db_port         = 'xxxxx'
+db_name         = 'xxxxx'
+db_user         = 'xxxxx'
+db_pass         = 'xxxxx'
+bcrypt_salt     = 12
+secret          = 123456789
+smtp_host       = 'xxxxx'
+smtp_port       = 'xxxxx'
+smtp_user       = 'xxxxx'
+smtp_pass       = 'xxxxx'
+smtp_user_from  = 'xxxxx'
+smtp_mail_from  = 'xxxxx'
+smtp_dirname    = 'xxxxx'
 ```
 
 For ``bcrypt_salt`` [see here](https://www.npmjs.com/package/bcrypt#a-note-on-rounds).
@@ -93,6 +100,7 @@ For ``bcrypt_salt`` [see here](https://www.npmjs.com/package/bcrypt#a-note-on-ro
  - ``/categories/:id`` \[delete\] \[aut\] delete one content by id
  - ``/auth`` \[post\] login
  - ``/auth/validate`` \[get\] \[aut\] \[dev\] test the jwt, return ``req.user``
+ - ``/mailer/send`` \[post\] \[aut\] send email via smtp (see ``.env`` file)
  
 # Mongo schemas
 #### Author
